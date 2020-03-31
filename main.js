@@ -167,6 +167,7 @@ function sendRequest(callOptions, callback) {
 function get(callOptions, callback) {
   callOptions.method = 'GET';
   callOptions.query = 'sysparm_limit=1';
+  // callOptions.query = 'sysparm_limit=1&sysparm_offset=17';
   sendRequest(callOptions, (results, error) => callback(results, error));
 }
 
