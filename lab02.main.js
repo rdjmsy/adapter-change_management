@@ -97,7 +97,7 @@ function get(serviceNowTable, callback) {
 }
 
 /**
- * @function post
+ * @function 
  * @description Call the ServiceNow POST API.
  *
  * @param {string} serviceNowTable - The table target of the ServiceNow table API.
