@@ -2,7 +2,7 @@
 const options = {
   url: 'https://dev66858.service-now.com/',
   username: 'admin',
-  password: 'RO#u0323120!'
+  password: 'RO#u0323120!',
   serviceNowTable: 'change_request'
 };
 
@@ -18,6 +18,7 @@ const path = require('path');
  */
 const ServiceNowConnector = require(path.join(__dirname, './connector.js'));
 
+
 /**
  * @function mainOnObject
  * @description Instantiates an object from the imported ServiceNowConnector class
@@ -28,10 +29,22 @@ function mainOnObject() {
   const connector = new ServiceNowConnector(options);
   // Test the object's get and post methods.
   // You must write the arguments for get and post.
-  connector.get();
-  connector.post();
+  connector.get((data, error) => {
+      if (error) {
+          console.error('\nError returned from GET request:\n${JSON.stringify(error)}');
+      }
+      console.log('\nResponse returned from GET request:\n${JSON.stringify(data)}');
+  });
+
+  connector.post((pdata, error) => {
+      if (error) {
+          console.error('\nError returned from POST request:\n${JSON.stringify(error)}');
+      }
+      console.log('\nResponse returned from POST request:\n${JSON.stringify(pdata)}');
+  });
 
 }
+
 
 // Call mainOnObject to run it.
 mainOnObject();

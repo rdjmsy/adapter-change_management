@@ -56,7 +56,7 @@ class ServiceNowConnector {
    */
   constructUri(serviceNowTable, query = null) {
     let uri = `/api/now/table/${serviceNowTable}`;
-    let query = this.getCallOptions.query;
+    // let query = this.getCallOptions.query;
     // let query = this.options.query
     if (query) {
       uri = uri + '?' + query;
@@ -67,7 +67,7 @@ class ServiceNowConnector {
 
   /**
    * @memberof ServiceNowConnector
-   * method isHibernating
+   * @method isHibernating
    * @description Checks if request function responded with evidence of
    *   a hibernating ServiceNow instance.
    *
@@ -75,7 +75,7 @@ class ServiceNowConnector {
    *
    * @return {boolean} Returns true if instance is hibernating. Otherwise returns false.
    */
-  function isHibernating(response) {
+  isHibernating(response) {
     return response.body.includes('Instance Hibernating page')
     && response.body.includes('<html>')
     && response.statusCode === 200;
@@ -97,7 +97,7 @@ class ServiceNowConnector {
    *   Will be HTML text if hibernating instance.
    * @param {error} callback.error - The error property of callback.
    */
-  function processRequestResults(error, response, body, callback) {
+  processRequestResults(error, response, body, callback) {
     /**
      * You must build the contents of this function.
      * Study your package and note which parts of the get()
@@ -114,7 +114,7 @@ class ServiceNowConnector {
     } else if (!validResponseRegex.test(response.statusCode)) {
         console.error('Bad response code.');
         callbackError = response;
-    } else if (isHibernating(response)) {
+    } else if (this.isHibernating(response)) {
         callbackError = 'ServiceNow instance is hibernating';
         console.error(callbackError);
     } else {
@@ -140,13 +140,13 @@ class ServiceNowConnector {
    *   Will be HTML text if hibernating instance.
    * @param {error} callback.error - The error property of callback.
    */
-  function sendRequest(callOptions, callback) {
+  sendRequest(callOptions, callback) {
     // Initialize return arguments for callback
     let uri;
     if (callOptions.query)
-      uri = constructUri(callOptions.serviceNowTable, callOptions.query);
+      uri = this.constructUri(callOptions.serviceNowTable, callOptions.query);
     else
-      uri = constructUri(callOptions.serviceNowTable);
+      uri = this.constructUri(callOptions.serviceNowTable);
     /**
      * You must build the requestOptions object.
      * This is not a simple copy/paste of the requestOptions object
@@ -156,15 +156,15 @@ class ServiceNowConnector {
     const requestOptions = {
         method: callOptions.method,
         auth: {
-            user: options.username,
-            pass: options.password,
+            user: callOptions.username,
+            pass: callOptions.password,
         },
-        baseUrl: options.url,
+        baseUrl: callOptions.url,
         uri: uri,
     };
     // console.log(requestOptions);
     request(requestOptions, (error, response, body) => {
-      processRequestResults(error, response, body, (processedResults, processedError) => callback(processedResults, processedError));
+      this.processRequestResults(error, response, body, (processedResults, processedError) => callback(processedResults, processedError));
     });
   }
 
@@ -195,7 +195,7 @@ class ServiceNowConnector {
    * @memberof ServiceNowConnector
    * @method post
    * @description Call the ServiceNow POST API. Sets the API call's method,
-   *   then calls sendRequest().
+   *   then calls this.sendRequest().
    *
    * @param {object} callOptions - Passed call options.
    * @param {string} callOptions.serviceNowTable - The table target of the ServiceNow table API.
@@ -204,9 +204,11 @@ class ServiceNowConnector {
    *   Will be HTML text if hibernating instance.
    * @param {error} callback.error - The error property of callback.
    */
-  function post(callOptions, callback) {
-    callOptions.method = 'POST';
-    sendRequest(callOptions, (results, error) => callback(results, error));
+  post(callback) {
+    let postCallOptions = this.options;
+    postCallOptions.method = 'POST';
+    postCallOptions.query = null;
+    this.sendRequest(postCallOptions, (results, error) => callback(results, error));
   }
 
 
