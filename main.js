@@ -90,8 +90,8 @@ function processRequestResults(error, response, body, callback) {
    * This function must not check for a hibernating instance;
    * it must call function isHibernating.
    */
-  let callbackData=null;
-  let callbackError=null;
+  let callbackData = null;
+  let callbackError = null;
   if (error) {
       console.error('Error present.');
       callbackError = error;
