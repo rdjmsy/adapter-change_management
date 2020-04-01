@@ -31,16 +31,16 @@ function mainOnObject() {
   // You must write the arguments for get and post.
   connector.get((data, error) => {
       if (error) {
-          console.error('\nError returned from GET request:\n${JSON.stringify(error)}');
+          console.error(`\nError returned from GET request:\n${JSON.stringify(error)}`);
       }
-      console.log('\nResponse returned from GET request:\n${JSON.stringify(data)}');
+      console.log(`\nResponse returned from GET request:\n${JSON.stringify(data)}`);
   });
 
   connector.post((pdata, error) => {
       if (error) {
-          console.error('\nError returned from POST request:\n${JSON.stringify(error)}');
+          console.error(`\nError returned from POST request:\n${JSON.stringify(error)}`);
       }
-      console.log('\nResponse returned from POST request:\n${JSON.stringify(pdata)}');
+      console.log(`\nResponse returned from POST request:\n${JSON.stringify(pdata)}`);
   });
 
 }
