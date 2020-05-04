@@ -118,7 +118,8 @@ class ServiceNowAdapter extends EventEmitter {
         */
         this.emitOffline();
         // log.info('Service-now adapter is offline {this.id}');
-        log.info('Service-now adapter is offline', this.id);
+        log.info(`Service-now adapter is offline ${this.id}`);
+        //log.info('Service-now adapter is offline', this.id);
         callbackError = error;
 
      } else {
