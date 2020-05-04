@@ -139,7 +139,7 @@ class ServiceNowAdapter extends EventEmitter {
         this.emitOnline();
         // callbackData = result;
         log.info(`Service-now adapter is available.  ID:  ${JSON.stringify(responseData)}`);
-        if(callback) {
+        if (callback) {
             callback(responseData);
         }
      }
@@ -155,7 +155,7 @@ class ServiceNowAdapter extends EventEmitter {
    */
   emitOffline() {
     this.emitStatus('OFFLINE');
-    log.warn('ServiceNow: Instance is unavailable.');
+    log.warn(`ServiceNow: Instance is unavailable.  ID:  ${this.id}`);
   }
 
   /**
@@ -167,7 +167,7 @@ class ServiceNowAdapter extends EventEmitter {
    */
   emitOnline() {
     this.emitStatus('ONLINE');
-    log.info('ServiceNow: Instance is available.');
+    log.info(`ServiceNow: Instance is available.  ID:  ${this.id}`);
   }
 
   /**
@@ -200,7 +200,27 @@ class ServiceNowAdapter extends EventEmitter {
      * get() takes a callback function.
      */
      // ServiceNowConnector.get(callback);
-     this.connector.get(callback);
+     // this.connector.get(callback);
+     this.connector.get((data, error) => {
+       if (error) {
+           callback(data, error);
+       } else {
+           if (data.hasOwnProperty('body')) {
+             var body_array = (JSON.parse(data.body));
+             var num_results = body_array.result.length;
+             var changeTicket = [];
+
+             for (var i = 0; i < num_results; i += 1) {
+               var result_array = (JSON.parse(data.body).result);
+               changeTicket.push({"change_ticket_number" : result_array[i].number, "active" : result_array[i].active, "priority" : result_array[i].priority, 
+                                          "description" : result_array[i].description, "work_start" : result_array.work_start, "work_end" : result_array[i].work_end, 
+                                          "change_ticket_key" : result_array[i].sys_id});
+
+             }
+           callback(changeTicket, error); 
+           }
+       } 
+     }
   }
 
   /**
