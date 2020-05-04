@@ -101,8 +101,8 @@ class ServiceNowAdapter extends EventEmitter {
       * or the instance was hibernating. You must write
       * the blocks for each branch.
       */
-      let callbackData = null;
-      let callbackError = null;
+      // let callbackData = null;
+      // let callbackError = null;
      if (error) {
        /**
         * Write this block.
@@ -118,9 +118,13 @@ class ServiceNowAdapter extends EventEmitter {
         */
         this.emitOffline();
         // log.info('Service-now adapter is offline {this.id}');
-        log.info('Service-now adapter is offline', this.id);
-        callbackError = error;
-
+        // log.info('Service-now adapter is offline', this.id);
+        // log.info(`Service-now adapter is offline ${this.id}`);
+        log.error(`Service-now: Instance is unavailable and OFFLINE! User ${this.props.auth.username} Adapter ID: ${this.id}, Error Details: ${JSON.stringify(error)}`);
+          if (callback) {
+            // callbackError = error;
+            callback(errorMessage);
+          }
      } else {
        /**
         * Write this block.
@@ -133,8 +137,11 @@ class ServiceNowAdapter extends EventEmitter {
         * responseData parameter.
         */
         this.emitOnline();
-        callbackData = result;
-        log.info('Service-now adapter is online.')
+        // callbackData = result;
+        log.info(`Service-now adapter is available.  ID:  ${JSON.stringify(responseData)}`);
+        if(callback) {
+            callback(responseData);
+        }
      }
    });
   }
