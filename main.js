@@ -192,7 +192,7 @@ class ServiceNowAdapter extends EventEmitter {
    * @param {ServiceNowAdapter~requestCallback} callback - The callback that
    *   handles the response.
    */
-  getRecord(callback) {
+   getRecord(callback) {
     /**
      * Write the body for this function.
      * The function is a wrapper for this.connector's get() method.
@@ -215,13 +215,12 @@ class ServiceNowAdapter extends EventEmitter {
                changeTicket.push({"change_ticket_number" : result_array[i].number, "active" : result_array[i].active, "priority" : result_array[i].priority, 
                                           "description" : result_array[i].description, "work_start" : result_array.work_start, "work_end" : result_array[i].work_end, 
                                           "change_ticket_key" : result_array[i].sys_id});
-
              }
            callback(changeTicket, error); 
            }
        }
      });
-  }
+   }
 
   /**
    * @memberof ServiceNowAdapter
@@ -232,7 +231,7 @@ class ServiceNowAdapter extends EventEmitter {
    * @param {ServiceNowAdapter~requestCallback} callback - The callback that
    *   handles the response.
    */
-  postRecord(callback) {
+   postRecord(callback) {
     /**
      * Write the body for this function.
      * The function is a wrapper for this.connector's post() method.
@@ -240,8 +239,23 @@ class ServiceNowAdapter extends EventEmitter {
      * post() takes a callback function.
      */
      // ServiceNowConnector.post(callback);
-     this.connector.post(callback);
-  }
+     // this.connector.post(callback);
+     this.connector.post((data, error) => {
+         if (error) {
+           callback(data, error);
+         } else {
+             if (data.hasOwnProperty('body')) {
+               var changeTicket = {};
+               var result_array = (JSON.parse(DataCue.body).result);
+               changeTicket = ({"change_ticket_numer" : result_array.number, "active" : result_array.active, "priority" : result_array.priority, 
+                                    "description" : result_array.description, "work_start" : result_array.work_start, "work_end" : result_array.work_end, 
+                                    "change_ticket_key" : result_array.sys_id});
+               callback(changeTicket, error);
+             }
+         }
+
+     });
+   }
 }
 
 module.exports = ServiceNowAdapter;
