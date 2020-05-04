@@ -219,8 +219,8 @@ class ServiceNowAdapter extends EventEmitter {
              }
            callback(changeTicket, error); 
            }
-       } 
-     }
+       }
+     });
   }
 
   /**
