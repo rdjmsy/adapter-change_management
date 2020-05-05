@@ -123,7 +123,7 @@ class ServiceNowAdapter extends EventEmitter {
         // log.error(`Service-now: Instance is unavailable and OFFLINE! User ${this.props.auth.username} Adapter ID: ${this.id}, Error Details: ${JSON.stringify(error)}`);
           // if (callback) {
             // callback(errorMessage);
-          }
+          // }
      } else {
        /**
         * Write this block.
@@ -139,7 +139,7 @@ class ServiceNowAdapter extends EventEmitter {
         // log.info(`Service-now adapter is available.  ID:  ${JSON.stringify(responseData)}`);
         // if (callback) {
             // callback(responseData);
-        }
+        // }
      }
    });
   }
