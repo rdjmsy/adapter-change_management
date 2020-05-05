@@ -41,7 +41,7 @@
       "output": {
         "name": "changeTicket",
         "type": "object",
-        "description": "The change management ticket document for the newly cretaed change ticket.",
+        "description": "The change management ticket document for the newly created change ticket.",
         "schema": {
           "title": "changeTicket",
           "$ref": "changeRequest#/definitions/changeTicket"
