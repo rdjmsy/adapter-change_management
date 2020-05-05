@@ -218,7 +218,7 @@ class ServiceNowAdapter extends EventEmitter {
                        work_end: change.work_end
 
                    };
-                   tickets.PushManager(newChange);
+                   tickets.push(newChange);
                })
                callback(tickets);
            }
