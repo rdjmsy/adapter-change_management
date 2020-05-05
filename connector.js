@@ -144,9 +144,9 @@ class ServiceNowConnector {
     // Initialize return arguments for callback
     let uri;
     if (callOptions.query)
-      uri = this.constructUri(callOptions.serviceNowTable, callOptions.query);
+      uri = this.constructUri(this.options.serviceNowTable, callOptions.query);
     else
-      uri = this.constructUri(callOptions.serviceNowTable);
+      uri = this.constructUri(this.options.serviceNowTable);
     /**
      * You must build the requestOptions object.
      * This is not a simple copy/paste of the requestOptions object
@@ -156,13 +156,12 @@ class ServiceNowConnector {
     const requestOptions = {
         method: callOptions.method,
         auth: {
-            user: callOptions.username,
-            pass: callOptions.password,
+            user: this.options.username,
+            pass: this.options.password,
         },
-        baseUrl: callOptions.url,
-        uri: uri,
+        baseUrl: this.options.url,
+        'uri': uri,
     };
-    // console.log(requestOptions);
     request(requestOptions, (error, response, body) => {
       this.processRequestResults(error, response, body, (processedResults, processedError) => callback(processedResults, processedError));
     });
@@ -204,11 +203,11 @@ class ServiceNowConnector {
    *   Will be HTML text if hibernating instance.
    * @param {error} callback.error - The error property of callback.
    */
-  post(callback) {
-    let postCallOptions = this.options;
-    postCallOptions.method = 'POST';
-    postCallOptions.query = null;
-    this.sendRequest(postCallOptions, (results, error) => callback(results, error));
+  post(callOptions, callback) {
+    // let postCallOptions = this.options;
+    callOptions.method = 'POST';
+    // postCallOptions.query = null;
+    this.sendRequest(callOptions, (results, error) => callback(results, error));
   }
 
 
