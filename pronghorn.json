@@ -23,8 +23,7 @@
           "items": {
             "title": "changeTicket",
             "$ref": "changeRequest#/definitions/changeTicket"
-          } 
-          
+          }   
         }
       },
       "roles": [
