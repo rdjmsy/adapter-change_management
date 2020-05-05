@@ -120,10 +120,9 @@ class ServiceNowAdapter extends EventEmitter {
         // log.info('Service-now adapter is offline {this.id}');
         // log.info('Service-now adapter is offline', this.id);
         // log.info(`Service-now adapter is offline ${this.id}`);
-        log.error(`Service-now: Instance is unavailable and OFFLINE! User ${this.props.auth.username} Adapter ID: ${this.id}, Error Details: ${JSON.stringify(error)}`);
-          if (callback) {
-            // callbackError = error;
-            callback(errorMessage);
+        // log.error(`Service-now: Instance is unavailable and OFFLINE! User ${this.props.auth.username} Adapter ID: ${this.id}, Error Details: ${JSON.stringify(error)}`);
+          // if (callback) {
+            // callback(errorMessage);
           }
      } else {
        /**
@@ -137,10 +136,9 @@ class ServiceNowAdapter extends EventEmitter {
         * responseData parameter.
         */
         this.emitOnline();
-        // callbackData = result;
-        log.info(`Service-now adapter is available.  ID:  ${JSON.stringify(responseData)}`);
-        if (callback) {
-            callback(responseData);
+        // log.info(`Service-now adapter is available.  ID:  ${JSON.stringify(responseData)}`);
+        // if (callback) {
+            // callback(responseData);
         }
      }
    });
@@ -203,23 +201,30 @@ class ServiceNowAdapter extends EventEmitter {
      // this.connector.get(callback);
      this.connector.get((data, error) => {
        if (error) {
-           callback(data, error);
-       } else {
-           if (data.hasOwnProperty('body')) {
-             var body_array = (JSON.parse(data.body));
-             var num_results = body_array.result.length;
-             var changeTicket = [];
-
-             for (var i = 0; i < num_results; i += 1) {
-               var result_array = (JSON.parse(data.body).result);
-               changeTicket.push({"change_ticket_number" : result_array[i].number, "active" : result_array[i].active, "priority" : result_array[i].priority, 
-                                          "description" : result_array[i].description, "work_start" : result_array.work_start, "work_end" : result_array[i].work_end, 
-                                          "change_ticket_key" : result_array[i].sys_id});
-             }
-           callback(changeTicket, error); 
-           }
+           callback([], error);
        }
-     });
+       if (data) {
+           if (data.body) {
+               let result = JSON.parse(data.body);
+               let tickets = [];
+               result.result.forEach((change) => {
+                   let newChange = {
+                       change_ticket_number: change.number,
+                       change_ticket_key: change.sys_id,
+                       active: change.active,
+                       priority: change.priority,
+                       description: change.description,
+                       work_start: change.work_start,
+                       work_end: change.work_end
+
+                   };
+                   tickets.PushManager(newChange);
+               })
+               callback(tickets);
+           }
+       } 
+     // });
+     })
    }
 
   /**
@@ -240,21 +245,31 @@ class ServiceNowAdapter extends EventEmitter {
      */
      // ServiceNowConnector.post(callback);
      // this.connector.post(callback);
-     this.connector.post((data, error) => {
+     this.connector.post({}, (data, error) => {
+         log.info(data);
+         log.info(error);
          if (error) {
            callback(data, error);
-         } else {
-             if (data.hasOwnProperty('body')) {
-               var changeTicket = {};
-               var result_array = (JSON.parse(DataCue.body).result);
-               changeTicket = ({"change_ticket_numer" : result_array.number, "active" : result_array.active, "priority" : result_array.priority, 
-                                    "description" : result_array.description, "work_start" : result_array.work_start, "work_end" : result_array.work_end, 
-                                    "change_ticket_key" : result_array.sys_id});
-               callback(changeTicket, error);
+         }
+         if (data) {
+             if (data.body) {
+                 log.info("Entered body section");
+                 const result = JSON.parse(data.body);
+                 const ticket = result.result;
+                 const newTicket = { change_ticket_number: ticket.number,
+                    change_ticket_key: ticket.sys_id,
+                    active: ticket.active,
+                    priority: ticket.priority,
+                    description: ticket.description,
+                    work_start: ticket.work_start,
+                    work_end: ticket.work_end
+                 };
+                 log.info(newTicket);
+                 callback(newTicket, error);
              }
          }
-
-     });
+     // });
+     })
    }
 }
 
